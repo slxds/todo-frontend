@@ -34,7 +34,7 @@ export const Component = ({ navigation, onCreateNewList }) => {
     reportError({ text: message })
       .then((res) => {
         setOpen(false);
-
+        setMessage("");
         toast.success("Thank you for your feedback");
       })
       .catch((err) => toast.error("Sorry that did not work"));
