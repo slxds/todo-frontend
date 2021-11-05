@@ -1,15 +1,22 @@
-import { PlusIcon } from "@heroicons/react/outline";
+import { PlusIcon, FolderAddIcon } from "@heroicons/react/outline";
 import { Disclosure } from "@headlessui/react";
-import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/solid";
+import {
+  ChevronUpIcon,
+  ChevronDownIcon,
+  ViewListIcon,
+  EmojiSadIcon,
+} from "@heroicons/react/solid";
+import { Link } from "react-router-dom";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const Component = ({ navigation }) => {
+export const Component = ({ navigation, onCreateNewList }) => {
   return (
-    <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+    <div className="hidden md:flex md:w-64 md:flex-col md:inset-y-0">
       {/* Sidebar component, swap this element with another sidebar if you like */}
-      <div className="flex flex-col flex-grow pt-5 bg-indigo-700 overflow-y-auto">
+      <div className="flex flex-col flex-grow pt-5 bg-indigo-700 overflow-y-auto overflow-x-hidden">
         <div className="flex items-center flex-shrink-0 px-4">
           <img
             className="h-8 w-auto"
@@ -19,50 +26,24 @@ export const Component = ({ navigation }) => {
         </div>
         <div className="mt-5 flex-1 flex flex-col">
           <nav className="flex-1 px-2 pb-4 space-y-1">
-            <div className="  group flex items-center text-sm font-medium rounded-md">
-              <a className="text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                <PlusIcon
-                  className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
-                  aria-hidden="true"
-                />
-              </a>
-
-              <input
-                type="text"
-                id="email"
-                className="focus:ring-indigo-500 focus:border-indigo-500 block w-full  rounded-md  sm:text-sm border-gray-300"
-                placeholder="John Doe"
-              />
-            </div>
-
-            <div className=" group flex items-center text-sm font-medium rounded-md">
-              <a className="text-indigo-100 hover:bg-indigo-600 group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                <PlusIcon
-                  className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
-                  aria-hidden="true"
-                />
-                TEST
-              </a>
-            </div>
-
             {navigation.map((item) =>
               !item.children ? (
-                <div key={item.name}>
-                  <a
-                    href="#"
+                <div key={item._id}>
+                  <Link
+                    to={`/${item._id}`}
                     className={classNames(
-                      item.current
+                      false
                         ? "bg-indigo-800 text-white"
                         : "text-indigo-100 hover:bg-indigo-600",
                       "group w-full flex items-center pl-2 py-2 text-sm font-medium rounded-md"
                     )}
                   >
-                    <item.icon
-                      className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                    <ViewListIcon
+                      className="mr-5 flex-shrink-0 h-6 w-6 text-indigo-300"
                       aria-hidden="true"
                     />
                     {item.name}
-                  </a>
+                  </Link>
                 </div>
               ) : (
                 <Disclosure as="div" key={item.name} className="space-y-1">
@@ -77,7 +58,7 @@ export const Component = ({ navigation }) => {
                         )}
                       >
                         <item.icon
-                          className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                          className="mr-5 flex-shrink-0 h-6 w-6 text-indigo-300"
                           aria-hidden="true"
                         />
                         <span className="flex-1">{item.name}</span>
@@ -94,8 +75,12 @@ export const Component = ({ navigation }) => {
                             key={subItem.name}
                             as="a"
                             href={subItem.href}
-                            className="group w-full flex items-center pl-11 pr-2 py-2 text-sm font-medium rounded-md text-indigo-100 hover:bg-indigo-600"
+                            className="group w-full flex items-center pl-4 pr-2 py-2 text-sm font-medium rounded-md text-indigo-100 hover:bg-indigo-600"
                           >
+                            <ViewListIcon
+                              className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                              aria-hidden="true"
+                            />
                             {subItem.name}
                           </Disclosure.Button>
                         ))}
@@ -106,28 +91,43 @@ export const Component = ({ navigation }) => {
               )
             )}
 
-            {/*navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className={classNames(
-                  item.current
-                    ? "bg-indigo-800 text-white"
-                    : "text-indigo-100 hover:bg-indigo-600",
-                  "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                )}
+            <span className="relative z-0 inline-flex shadow-sm rounded-md w-full">
+              <button
+                onClick={onCreateNewList}
+                type="button"
+                className="relative inline-flex items-center px-4 py-2 w-full rounded-l-md border border-gray-300 text-sm font-medium text-indigo-100 hover:bg-indigo-600 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
               >
-                <item.icon
-                  className="mr-3 flex-shrink-0 h-6 w-6 text-indigo-300"
+                <PlusIcon
+                  className="-ml-1 mr-2 h-5 w-5 text-indigo-300"
                   aria-hidden="true"
                 />
-                {item.name}
-              </a>
-                ))*/}
+                New List
+              </button>
+              <button
+                type="button"
+                className="-ml-px relative inline-flex items-center px-3 py-2 rounded-r-md border border-gray-300 text-sm font-medium text-indigo-100 hover:bg-indigo-600 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <FolderAddIcon
+                  className="h-5 w-5 text-indigo-300"
+                  aria-hidden="true"
+                />
+              </button>
+            </span>
           </nav>
         </div>
-        <div className="flex-shrink-0 flex border-t border-indigo-800 p-4">
-          <div>v0.1</div>
+        <div className="flex-shrink-0 flex border-t border-indigo-800 p-4 items-center">
+          <div className="flex-1">
+            <button
+              type="button"
+              className="inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white  hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              <EmojiSadIcon className="h-7 w-7" aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className="inline-flex p-1  text-center text-white">
+            Version: 0.1
+          </div>
         </div>
       </div>
     </div>
