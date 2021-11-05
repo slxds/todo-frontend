@@ -4,13 +4,16 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./context/auth";
+import { TodoProvider } from "./context/todo";
 import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <TodoProvider>
+          <App />
+        </TodoProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
