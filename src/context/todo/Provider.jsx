@@ -9,7 +9,7 @@ export const Provider = ({ children }) => {
   const [todoLists, setTodoLists] = useState([]);
 
   const todo = axios.create({
-    baseURL: `http://localhost:4000/v1.0`,
+    baseURL: `https://api.sumser.dev/v1.0`,
     headers: { Authorization: "Bearer " + jwt },
   });
 

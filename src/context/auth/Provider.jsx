@@ -34,7 +34,7 @@ export const Provider = ({ children }) => {
       console.log(didToken);
       axios
         .post(
-          "http://localhost:4000/v1.0/login/magic",
+          "https://api.sumser.dev/v1.0/login/magic",
           {},
           {
             headers: { Authorization: "Bearer " + didToken },
