@@ -1,3 +1,3 @@
-export { Context as AuthContext } from "./Context";
-export { Provider as AuthProvider } from "./Provider";
-export { useHook as useAuth } from "./hooks/useHook";
+export { Context as TodoContext } from "./Context";
+export { Provider as TodoProvider } from "./Provider";
+export { useHook as useTodo } from "./hooks/useHook";
