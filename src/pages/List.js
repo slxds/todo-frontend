@@ -1,13 +1,33 @@
 import {
+  DotsHorizontalIcon,
+  DotsVerticalIcon,
+  UserAddIcon,
+  ExclamationIcon,
+} from "@heroicons/react/outline";
+import {
+  CogIcon,
   CalendarIcon,
   CheckCircleIcon,
   ChevronRightIcon,
   PlusIcon,
+  ArchiveIcon,
+  ArrowCircleRightIcon,
+  ChevronDownIcon,
+  DuplicateIcon,
+  HeartIcon,
+  PencilAltIcon,
+  TrashIcon,
 } from "@heroicons/react/solid";
 import { TypedEmitter } from "@magic-sdk/provider";
-import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router";
+import { useEffect, useState, Fragment } from "react";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { useTodo } from "../context/todo";
+import { Modal } from "../components";
+import { Menu, Transition, Dialog } from "@headlessui/react";
+import { toast } from "react-toastify";
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const positions = [
   {
@@ -103,8 +123,10 @@ export const Page = () => {
   const [text, setText] = useState("");
   const [list, setList] = useState(null);
   const [listName, setListName] = useState("");
-
+  const [open, setOpen] = useState(false);
   const { listId } = useParams();
+
+  const navigate = useNavigate();
 
   const {
     addToDoItem,
@@ -112,6 +134,7 @@ export const Page = () => {
     checkToDoItem,
     changeToDoListName,
     refreshToDoList,
+    deletetoDoList,
   } = useTodo();
 
   useEffect(() => {
@@ -167,19 +190,194 @@ export const Page = () => {
       .catch((err) => console.log(err));
   };
 
+  const onDeleteToDoList = () => {
+    deletetoDoList(listId)
+      .then((res) => {
+        setOpen(false);
+        refreshToDoList();
+        toast.success("List deleted");
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
-      <form onSubmit={onChangeNameSubmit} className="py-5">
-        <input
-          type="text"
-          value={listName}
-          onChange={(e) => setListName(e.target.value)}
-          className="block border-0 border-b border-transparent bg-transparent  focus:border-indigo-600 focus:ring-0 sm:text-sm"
-          placeholder=""
-          required
-        />
-      </form>
+      <Modal open={open} setOpen={setOpen}>
+        <div className="sm:flex sm:items-start">
+          <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+            <ExclamationIcon
+              className="h-6 w-6 text-red-600"
+              aria-hidden="true"
+            />
+          </div>
+          <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <Dialog.Title
+              as="h3"
+              className="text-lg leading-6 font-medium text-gray-900"
+            >
+              Delete ToDo List
+            </Dialog.Title>
+            <div className="mt-2">
+              <p className="text-sm text-gray-500">
+                Are you sure you want to delete this list? All of your data will
+                be permanently removed from our servers forever. This action
+                cannot be undone.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+          <button
+            type="button"
+            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={onDeleteToDoList}
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+            onClick={() => setOpen(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </Modal>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <form onSubmit={onChangeNameSubmit} className="py-5">
+            <input
+              type="text"
+              value={listName}
+              onChange={(e) => setListName(e.target.value)}
+              onBlur={onChangeNameSubmit}
+              className="block border-0 border-b border-transparent bg-transparent hover:border-indigo-600 focus:border-indigo-600 focus:ring-0 text-xl"
+              placeholder=""
+              required
+            />
+          </form>
 
+          <Menu as="div" className="relative inline-block text-left">
+            <div>
+              <Menu.Button className="inline-flex justify-center w-full  rounded-full  px-2 py-2 bg-transparent text-sm hover:bg-gray-100 focus:outline-none ">
+                <DotsHorizontalIcon className="h-5 w-5 " aria-hidden="true" />
+              </Menu.Button>
+            </div>
+
+            <Transition
+              as={Fragment}
+              enter="transition ease-out duration-100"
+              enterFrom="transform opacity-0 scale-95"
+              enterTo="transform opacity-100 scale-100"
+              leave="transition ease-in duration-75"
+              leaveFrom="transform opacity-100 scale-100"
+              leaveTo="transform opacity-0 scale-95"
+            >
+              <Menu.Items className=" z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
+                <div className="py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        onClick={() =>
+                          toast.error("Archiving is currently not available")
+                        }
+                        className={classNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "group flex items-center px-4 py-2 text-sm w-full"
+                        )}
+                      >
+                        <ArchiveIcon
+                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                          aria-hidden="true"
+                        />
+                        Archive
+                      </button>
+                    )}
+                  </Menu.Item>
+                </div>
+                <div className="py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        onClick={() =>
+                          toast.error("Sharing is currently not available")
+                        }
+                        className={classNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "group flex items-center px-4 py-2 text-sm w-full"
+                        )}
+                      >
+                        <UserAddIcon
+                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                          aria-hidden="true"
+                        />
+                        Share
+                      </button>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        onClick={() =>
+                          toast.error("Favorites are currently not available")
+                        }
+                        className={classNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "group flex items-center px-4 py-2 text-sm w-full"
+                        )}
+                      >
+                        <HeartIcon
+                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                          aria-hidden="true"
+                        />
+                        Add to favorites
+                      </button>
+                    )}
+                  </Menu.Item>
+                </div>
+                <div className="py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        onClick={() => setOpen(true)}
+                        className={classNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "group flex items-center px-4 py-2 text-sm w-full"
+                        )}
+                      >
+                        <TrashIcon
+                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                          aria-hidden="true"
+                        />
+                        Delete
+                      </button>
+                    )}
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Transition>
+          </Menu>
+        </div>
+        <button
+          onClick={() => toast.error("Sharing is currently not available")}
+          type="button"
+          className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          <UserAddIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+          Share
+        </button>
+      </div>
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
         <ul role="list" className="divide-y divide-gray-200">
           <li>
@@ -195,9 +393,10 @@ export const Page = () => {
                   <div className="w-full">
                     <input
                       type="text"
+                      text-white
                       value={text}
                       onChange={(e) => setText(e.target.value)}
-                      className="block w-full border-0 border-b border-transparent bg-transparent  focus:border-indigo-600 focus:ring-0 sm:text-sm"
+                      className="block w-full border-0 border-b border-transparent bg-transparent hover:border-indigo-600 focus:border-indigo-600 focus:ring-0 sm:text-sm"
                       placeholder="Create new Task"
                       required
                     />
@@ -292,7 +491,7 @@ export const Page = () => {
                     <div className="min-w-0  pl-5 flex-1 sm:flex sm:items-center sm:justify-between">
                       <div className="truncate">
                         <div className="flex text-sm">
-                          <p className="font-medium text-indigo-600 truncate">
+                          <p className="font-medium text-indigo-600 truncate line-through">
                             {todo.text}
                           </p>
                         </div>
