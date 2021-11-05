@@ -1,3 +1,3 @@
 export const Page = () => {
-  return <div>Home</div>;
+  return <div>Select a list</div>;
 };
