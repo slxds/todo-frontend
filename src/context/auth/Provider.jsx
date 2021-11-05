@@ -58,6 +58,7 @@ export const Provider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    setJWT(null);
   };
 
   const contextValue = {
