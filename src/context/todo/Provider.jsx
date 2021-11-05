@@ -28,10 +28,11 @@ export const Provider = ({ children }) => {
   };
 
   const createNewToDoList = () => {
-    todo
+    return todo
       .post("/todo")
       .then((res) => {
         getMyToDoLists();
+        return res.data._id;
       })
       .catch((err) => {
         console.log(err);
@@ -48,6 +49,10 @@ export const Provider = ({ children }) => {
     addToDoItem: (listId, data) => todo.post(`/todo/${listId}`, data),
     checkToDoItem: (listId, itemId, done = false) =>
       todo.patch(`/todo/${listId}/${itemId}`, { done: done }),
+    deletetoDoList: (listId) => todo.delete(`/todo/${listId}`),
+    reportError: (data) => todo.post("/issue", data),
+    getMe: () => todo.get(`/profile/me`),
+    updateProfile: (data) => todo.patch(`/profile/me`, data),
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;
