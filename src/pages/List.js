@@ -254,7 +254,7 @@ export const Page = () => {
               value={listName}
               onChange={(e) => setListName(e.target.value)}
               onBlur={onChangeNameSubmit}
-              className="block border-0 border-b border-transparent bg-transparent hover:border-indigo-600 focus:border-indigo-600 focus:ring-0 text-xl"
+              className="block border-0 border-b border-transparent bg-transparent hover:border-indigo-600 focus:border-indigo-600 focus:ring-0 "
               placeholder=""
               required
             />
