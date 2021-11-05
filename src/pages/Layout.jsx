@@ -1,26 +1,31 @@
-import { useState, Fragment } from "react";
-import { Link, Outlet } from "react-router-dom";
-import styled from "styled-components";
-import { useAuth } from "../context/auth";
-import { Dialog, Menu, Transition } from "@headlessui/react";
+import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import {
-  BellIcon,
   CalendarIcon,
   ChartBarIcon,
   FolderIcon,
   HomeIcon,
   InboxIcon,
-  MenuAlt2Icon,
   UsersIcon,
-  XIcon,
-  PlusIcon,
 } from "@heroicons/react/outline";
+
+import { useAuth } from "../context/auth";
 
 import { MobileSidebar, Sidebar, TopBar } from "../components";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
+  {
+    name: "Team",
+    icon: UsersIcon,
+    current: false,
+    children: [
+      { name: "Overview", href: "#" },
+      { name: "Members", href: "#" },
+      { name: "Calendar", href: "#" },
+      { name: "Settings", href: "#" },
+    ],
+  },
   { name: "Projects", href: "#", icon: FolderIcon, current: false },
   { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
   { name: "Documents", href: "#", icon: InboxIcon, current: false },
