@@ -1,11 +1,23 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { XIcon } from "@heroicons/react/outline";
+import { XIcon, FolderAddIcon, PlusIcon } from "@heroicons/react/outline";
+import { ViewListIcon } from "@heroicons/react/solid";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const Component = ({ sidebarOpen, setSidebarOpen, navigation }) => {
+export const Component = ({
+  sidebarOpen,
+  setSidebarOpen,
+  navigation,
+  onCreateNewList,
+}) => {
+  let { listId } = useParams();
+
+  const navigate = useNavigate();
+
   return (
     <Transition.Root show={sidebarOpen} as={Fragment}>
       <Dialog
@@ -64,23 +76,53 @@ export const Component = ({ sidebarOpen, setSidebarOpen, navigation }) => {
             <div className="mt-5 flex-1 h-0 overflow-y-auto">
               <nav className="px-2 space-y-1">
                 {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-indigo-800 text-white"
-                        : "text-indigo-100 hover:bg-indigo-600",
-                      "group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                    )}
+                  <div key={item._id}>
+                    <button
+                      onClick={() => {
+                        navigate(`/${item._id}`);
+                        setSidebarOpen(false);
+                      }}
+                      className={classNames(
+                        listId === item._id
+                          ? "bg-indigo-800 text-white"
+                          : "text-indigo-100 hover:bg-indigo-600",
+                        "group w-full flex items-center pl-2 py-2 text-sm font-medium rounded-md"
+                      )}
+                    >
+                      <ViewListIcon
+                        className="mr-5 flex-shrink-0 h-6 w-6 text-indigo-300"
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                    </button>
+                  </div>
+                ))}
+                <span className="relative z-0 inline-flex shadow-sm rounded-md w-full">
+                  <button
+                    onClick={() => {
+                      onCreateNewList();
+                      setSidebarOpen(false);
+                    }}
+                    type="button"
+                    className="relative inline-flex items-center px-4 py-2 w-full rounded-l-md border border-gray-300 text-sm font-medium text-indigo-100 hover:bg-indigo-600 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                   >
-                    <item.icon
-                      className="mr-4 flex-shrink-0 h-6 w-6 text-indigo-300"
+                    <PlusIcon
+                      className="-ml-1 mr-2 h-5 w-5 text-indigo-300"
                       aria-hidden="true"
                     />
-                    {item.name}
-                  </a>
-                ))}
+                    New List
+                  </button>
+                  <button
+                    onClick={() => toast.error("Folders are not yet available")}
+                    type="button"
+                    className="-ml-px relative inline-flex items-center px-3 py-2 rounded-r-md border border-gray-300 text-sm font-medium text-indigo-100 hover:bg-indigo-600 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    <FolderAddIcon
+                      className="h-5 w-5 text-indigo-300"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </span>
               </nav>
             </div>
           </div>
