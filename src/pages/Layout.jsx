@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import {
   CalendarIcon,
@@ -8,13 +8,13 @@ import {
   InboxIcon,
   UsersIcon,
 } from "@heroicons/react/outline";
-
+import { useTodo } from "../context/todo";
 import { useAuth } from "../context/auth";
 
 import { MobileSidebar, Sidebar, TopBar } from "../components";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
+  { name: "Dashboard", href: "#", icon: HomeIcon, current: false },
   {
     name: "Team",
     icon: UsersIcon,
@@ -40,16 +40,25 @@ const userNavigation = [
 export const Layout = () => {
   const { logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [lists, setLists] = useState([]);
+
+  const { createNewToDoList, myToDoLists } = useTodo();
+
+  const onCreateNewList = () => {
+    createNewToDoList();
+  };
+
   return (
     <>
-      <div>
+      <div className="flex flex-row h-full">
         <MobileSidebar
           setSidebarOpen={setSidebarOpen}
           sidebarOpen={sidebarOpen}
           navigation={navigation}
         />
-        <Sidebar navigation={navigation} />
-        <div className="md:pl-64 flex flex-col flex-1">
+        <Sidebar navigation={myToDoLists} onCreateNewList={onCreateNewList} />
+        <div className="flex flex-col flex-1">
           <TopBar
             userNavigation={userNavigation}
             setSidebarOpen={setSidebarOpen}

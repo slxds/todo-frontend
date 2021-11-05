@@ -9,7 +9,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { HomePage, Layout, LoginPage, ProfilePage } from "./pages";
+import { HomePage, Layout, ListPage, LoginPage, ProfilePage } from "./pages";
 import { useAuth } from "./context/auth";
 
 function App() {
@@ -24,6 +24,7 @@ function App() {
         }
       >
         <Route index element={<HomePage />} />
+        <Route path=":listId" element={<ListPage />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
       <Route path="/login" element={<LoginPage />} />
