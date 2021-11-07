@@ -1,28 +1,18 @@
 import {
   DotsHorizontalIcon,
-  DotsVerticalIcon,
   UserAddIcon,
   ExclamationIcon,
 } from "@heroicons/react/outline";
 import {
-  CogIcon,
-  CalendarIcon,
   CheckCircleIcon,
   ChevronRightIcon,
   PlusIcon,
-  ArchiveIcon,
-  ArrowCircleRightIcon,
-  ChevronDownIcon,
-  DuplicateIcon,
-  HeartIcon,
-  PencilAltIcon,
-  TrashIcon,
 } from "@heroicons/react/solid";
 import { TypedEmitter } from "@magic-sdk/provider";
 import { useEffect, useState, Fragment } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { useTodo } from "../context/todo";
-import { Modal } from "../components";
+import { DropDownMenu, Modal } from "../components";
 import { Menu, Transition, Dialog } from "@headlessui/react";
 import { toast } from "react-toastify";
 function classNames(...classes) {
@@ -203,6 +193,47 @@ export const Page = () => {
       });
   };
 
+  const menuItems = [
+    {
+      items: [
+        {
+          text: "Archive",
+          onClick: () => {
+            toast.warning("This function is not available");
+          },
+          icon: "ArchiveIcon",
+        },
+      ],
+    },
+    {
+      items: [
+        {
+          text: "Share",
+          onClick: () => {
+            toast.warning("This function is not available");
+          },
+          icon: "UserAddIcon",
+        },
+        {
+          text: "Add to favorites",
+          onClick: () => {
+            toast.warning("This function is not available");
+          },
+          icon: "HeartIcon",
+        },
+      ],
+    },
+    {
+      items: [
+        {
+          text: "Delete",
+          onClick: () => setOpen(true),
+          icon: "TrashIcon",
+        },
+      ],
+    },
+  ];
+
   return (
     <>
       <Modal open={open} setOpen={setOpen}>
@@ -260,114 +291,13 @@ export const Page = () => {
             />
           </form>
 
-          <Menu as="div" className="relative inline-block text-left">
+          <DropDownMenu menuItems={menuItems}>
             <div>
               <Menu.Button className="inline-flex justify-center w-full  rounded-full  px-2 py-2 bg-transparent text-sm hover:bg-gray-100 focus:outline-none ">
                 <DotsHorizontalIcon className="h-5 w-5 " aria-hidden="true" />
               </Menu.Button>
             </div>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items className=" z-40 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        onClick={() =>
-                          toast.error("Archiving is currently not available")
-                        }
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "group flex items-center px-4 py-2 text-sm w-full"
-                        )}
-                      >
-                        <ArchiveIcon
-                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                          aria-hidden="true"
-                        />
-                        Archive
-                      </button>
-                    )}
-                  </Menu.Item>
-                </div>
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        onClick={() =>
-                          toast.error("Sharing is currently not available")
-                        }
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "group flex items-center px-4 py-2 text-sm w-full"
-                        )}
-                      >
-                        <UserAddIcon
-                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                          aria-hidden="true"
-                        />
-                        Share
-                      </button>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        onClick={() =>
-                          toast.error("Favorites are currently not available")
-                        }
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "group flex items-center px-4 py-2 text-sm w-full"
-                        )}
-                      >
-                        <HeartIcon
-                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                          aria-hidden="true"
-                        />
-                        Add to favorites
-                      </button>
-                    )}
-                  </Menu.Item>
-                </div>
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        onClick={() => setOpen(true)}
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "group flex items-center px-4 py-2 text-sm w-full"
-                        )}
-                      >
-                        <TrashIcon
-                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                          aria-hidden="true"
-                        />
-                        Delete
-                      </button>
-                    )}
-                  </Menu.Item>
-                </div>
-              </Menu.Items>
-            </Transition>
-          </Menu>
+          </DropDownMenu>
         </div>
         <button
           onClick={() => toast.error("Sharing is currently not available")}
@@ -409,7 +339,7 @@ export const Page = () => {
             .filter((x) => x.done === false)
             .map((todo) => (
               <li key={todo._id}>
-                <button className="block hover:bg-gray-50 w-full">
+                <div className="block hover:bg-gray-50 w-full cursor-pointer">
                   <div className="px-2 py-2 flex items-center sm:px-6">
                     <button
                       onClick={() => checkTodoItem(todo._id, true)}
@@ -421,7 +351,7 @@ export const Page = () => {
                         aria-hidden="true"
                       />
                     </button>
-                    <div className="min-w-0  pl-5 flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div className="min-w-0  pl-5 flex flex-1 sm:flex sm:items-center sm:justify-between ">
                       <div className="truncate">
                         <div className="flex text-sm">
                           <p className="font-medium text-indigo-600 truncate">
@@ -449,7 +379,7 @@ export const Page = () => {
                       />
                     </div>
                   </div>
-                </button>
+                </div>
               </li>
             ))}
         </ul>
@@ -476,7 +406,7 @@ export const Page = () => {
             .filter((x) => x.done === true)
             .map((todo) => (
               <li key={todo._id}>
-                <button className="block hover:bg-gray-50 w-full">
+                <div className="block hover:bg-gray-50 w-full cursor-pointer">
                   <div className="px-2 py-2 flex items-center sm:px-6">
                     <button
                       onClick={() => checkTodoItem(todo._id, false)}
@@ -488,7 +418,7 @@ export const Page = () => {
                         aria-hidden="true"
                       />
                     </button>
-                    <div className="min-w-0  pl-5 flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div className="min-w-0  pl-5 flex flex-1 sm:flex sm:items-center sm:justify-between">
                       <div className="truncate">
                         <div className="flex text-sm">
                           <p className="font-medium text-indigo-600 truncate line-through">
@@ -509,6 +439,7 @@ export const Page = () => {
                         </div>
                       </div>
                     </div>
+
                     <div className="ml-5 flex-shrink-0">
                       <ChevronRightIcon
                         className="h-5 w-5 text-gray-400"
@@ -516,7 +447,7 @@ export const Page = () => {
                       />
                     </div>
                   </div>
-                </button>
+                </div>
               </li>
             ))}
         </ul>
