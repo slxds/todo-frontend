@@ -9,7 +9,7 @@ export const Provider = ({ children }) => {
   const [todoLists, setTodoLists] = useState([]);
 
   const todo = axios.create({
-    baseURL: `https://api.sumser.dev/v1.0`,
+    baseURL: process.env.REACT_APP_BASEURL,
     headers: { Authorization: "Bearer " + jwt },
   });
 
@@ -20,7 +20,7 @@ export const Provider = ({ children }) => {
 
   const getMyToDoLists = () => {
     todo
-      .get(`/todo`)
+      .get(`/v1.0/todo`)
       .then((res) => {
         setTodoLists(res.data);
       })
@@ -29,7 +29,7 @@ export const Provider = ({ children }) => {
 
   const createNewToDoList = () => {
     return todo
-      .post("/todo")
+      .post("/v1.0/todo")
       .then((res) => {
         getMyToDoLists();
         return res.data._id;
@@ -44,15 +44,15 @@ export const Provider = ({ children }) => {
     refreshToDoList: getMyToDoLists,
     createNewToDoList: createNewToDoList,
     changeToDoListName: (listId, data) =>
-      todo.patch(`/todo/name/${listId}`, data),
-    getToDoList: (listId) => todo.get(`/todo/${listId}`),
-    addToDoItem: (listId, data) => todo.post(`/todo/${listId}`, data),
+      todo.patch(`/v1.0/todo/name/${listId}`, data),
+    getToDoList: (listId) => todo.get(`/v1.0/todo/${listId}`),
+    addToDoItem: (listId, data) => todo.post(`/v1.0/todo/${listId}`, data),
     checkToDoItem: (listId, itemId, done = false) =>
-      todo.patch(`/todo/${listId}/${itemId}`, { done: done }),
-    deletetoDoList: (listId) => todo.delete(`/todo/${listId}`),
-    reportError: (data) => todo.post("/issue", data),
-    getMe: () => todo.get(`/profile/me`),
-    updateProfile: (data) => todo.patch(`/profile/me`, data),
+      todo.patch(`/v1.0/todo/${listId}/${itemId}`, { done: done }),
+    deletetoDoList: (listId) => todo.delete(`/v1.0/todo/${listId}`),
+    reportError: (data) => todo.post("/v1.0/issue", data),
+    getMe: () => todo.get(`/v1.0/profile/me`),
+    updateProfile: (data) => todo.patch(`/v1.0/profile/me`, data),
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

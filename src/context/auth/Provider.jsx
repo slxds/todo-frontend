@@ -14,6 +14,10 @@ export const Provider = ({ children }) => {
   let navigate = useNavigate();
   let location = useLocation();
 
+  const auth = axios.create({
+    baseURL: process.env.REACT_APP_BASEURL,
+  });
+
   let state = location.state;
   let from = state ? state.from.pathname : "/";
 
@@ -32,9 +36,9 @@ export const Provider = ({ children }) => {
     try {
       let didToken = await magic.auth.loginWithMagicLink({ email });
       console.log(didToken);
-      axios
+      auth
         .post(
-          "https://api.sumser.dev/v1.0/login/magic",
+          "/v1.0/login/magic",
           {},
           {
             headers: { Authorization: "Bearer " + didToken },
