@@ -19,7 +19,7 @@ export const TodoListSettings = ({ open, setOpen, item }) => {
       open={open}
       setOpen={setOpen}
       onFormSubmit={() => {}}
-      title={`Edit List: ${item.name}`}
+      title={`Edit List: ${item?.name}`}
       subtext="This is just demo data"
     >
       <div className="px-4 divide-y divide-gray-200 sm:px-6">
