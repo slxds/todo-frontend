@@ -16,10 +16,24 @@ export const Provider = ({ children }) => {
 
   const auth = axios.create({
     baseURL: process.env.REACT_APP_BASEURL,
+    withCredentials: true,
   });
 
   let state = location.state;
   let from = state ? state.from.pathname : "/";
+
+  useEffect(() => {
+    auth
+      .post(`/v1.0/login/refresh`)
+      .then((res) => {
+        setJWT(res.data.jwt);
+        setLoginInProcess(false);
+        navigate(from, { replace: true });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   useEffect(() => {
     if (!jwt) return;
@@ -45,7 +59,6 @@ export const Provider = ({ children }) => {
           }
         )
         .then((res) => {
-          console.log(res.data);
           setJWT(res.data.jwt);
           setLoginInProcess(false);
           navigate(from, { replace: true });

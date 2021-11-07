@@ -12,7 +12,7 @@ import { TypedEmitter } from "@magic-sdk/provider";
 import { useEffect, useState, Fragment } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { useTodo } from "../context/todo";
-import { DropDownMenu, Modal } from "../components";
+import { DropDownMenu, Modal, SlideOver } from "../components";
 import { Menu, Transition, Dialog } from "@headlessui/react";
 import { toast } from "react-toastify";
 function classNames(...classes) {
@@ -115,6 +115,8 @@ export const Page = () => {
   const [listName, setListName] = useState("");
   const [open, setOpen] = useState(false);
   const { listId } = useParams();
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const navigate = useNavigate();
 
@@ -157,7 +159,9 @@ export const Page = () => {
       });
   };
 
-  const checkTodoItem = (itemId, done) => {
+  const checkTodoItem = (e, itemId, done) => {
+    e.stopPropagation();
+
     console.log("clicked");
     checkToDoItem(listId, itemId, done)
       .then((res) => {
@@ -234,6 +238,11 @@ export const Page = () => {
     },
   ];
 
+  const openDetailSidebar = (item) => {
+    setDetailsOpen(true);
+    setSelectedItem(item);
+  };
+
   return (
     <>
       <Modal open={open} setOpen={setOpen}>
@@ -277,6 +286,7 @@ export const Page = () => {
           </button>
         </div>
       </Modal>
+
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <form onSubmit={onChangeNameSubmit} className="py-5">
@@ -339,10 +349,13 @@ export const Page = () => {
             .filter((x) => x.done === false)
             .map((todo) => (
               <li key={todo._id}>
-                <div className="block hover:bg-gray-50 w-full cursor-pointer">
+                <div
+                  onClick={() => openDetailSidebar(todo)}
+                  className="block hover:bg-gray-50 w-full cursor-pointer"
+                >
                   <div className="px-2 py-2 flex items-center sm:px-6">
                     <button
-                      onClick={() => checkTodoItem(todo._id, true)}
+                      onClick={(e) => checkTodoItem(e, todo._id, true)}
                       type="button"
                       className="inline-flex  items-center border border-transparent rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
@@ -406,10 +419,13 @@ export const Page = () => {
             .filter((x) => x.done === true)
             .map((todo) => (
               <li key={todo._id}>
-                <div className="block hover:bg-gray-50 w-full cursor-pointer">
+                <div
+                  onClick={() => openDetailSidebar(todo)}
+                  className="block hover:bg-gray-50 w-full cursor-pointer"
+                >
                   <div className="px-2 py-2 flex items-center sm:px-6">
                     <button
-                      onClick={() => checkTodoItem(todo._id, false)}
+                      onClick={(e) => checkTodoItem(e, todo._id, false)}
                       type="button"
                       className="inline-flex  items-center border border-transparent rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
@@ -452,6 +468,11 @@ export const Page = () => {
             ))}
         </ul>
       </div>
+      <SlideOver
+        open={detailsOpen}
+        setOpen={setDetailsOpen}
+        item={selectedItem}
+      />
     </>
   );
 };

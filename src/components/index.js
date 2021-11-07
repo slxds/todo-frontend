@@ -5,3 +5,4 @@ export { Component as Modal } from "./Modal";
 export { Component as Notification } from "./Notification";
 export { OutlinedHeroIcon, SolidHeroIcon } from "./HeroIcon";
 export { Component as DropDownMenu } from "./DropDownMenu";
+export { Component as SlideOver } from "./SlideOver";
