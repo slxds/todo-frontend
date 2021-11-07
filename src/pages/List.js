@@ -7,6 +7,9 @@ import {
   CheckCircleIcon,
   ChevronRightIcon,
   PlusIcon,
+  LinkIcon,
+  PlusSmIcon,
+  QuestionMarkCircleIcon,
 } from "@heroicons/react/solid";
 import { TypedEmitter } from "@magic-sdk/provider";
 import { useEffect, useState, Fragment } from "react";
@@ -15,6 +18,7 @@ import { useTodo } from "../context/todo";
 import { DropDownMenu, Modal, SlideOver } from "../components";
 import { Menu, Transition, Dialog } from "@headlessui/react";
 import { toast } from "react-toastify";
+import { TodoListItemDetails, TodoListSettings } from "../modals";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -117,6 +121,7 @@ export const Page = () => {
   const { listId } = useParams();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -201,16 +206,24 @@ export const Page = () => {
     {
       items: [
         {
+          text: "Settings",
+          onClick: () => {
+            setSettingsOpen(true);
+          },
+          icon: "CogIcon",
+        },
+      ],
+    },
+    {
+      items: [
+        {
           text: "Archive",
           onClick: () => {
             toast.warning("This function is not available");
           },
           icon: "ArchiveIcon",
         },
-      ],
-    },
-    {
-      items: [
+        ,
         {
           text: "Share",
           onClick: () => {
@@ -245,6 +258,11 @@ export const Page = () => {
 
   return (
     <>
+      <TodoListSettings
+        open={settingsOpen}
+        setOpen={setSettingsOpen}
+        item={list}
+      />
       <Modal open={open} setOpen={setOpen}>
         <div className="sm:flex sm:items-start">
           <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -468,7 +486,7 @@ export const Page = () => {
             ))}
         </ul>
       </div>
-      <SlideOver
+      <TodoListItemDetails
         open={detailsOpen}
         setOpen={setDetailsOpen}
         item={selectedItem}
