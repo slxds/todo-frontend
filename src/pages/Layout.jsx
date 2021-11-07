@@ -20,6 +20,7 @@ import {
 } from "../components";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import { ErrorSubmitModal } from "../modals";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: false },
@@ -43,8 +44,7 @@ const navigation = [
 export const Layout = () => {
   const { logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const [lists, setLists] = useState([]);
+  const [submitErrorModalOpen, setSubmitErrorModalOpen] = useState(false);
 
   const navigate = useNavigate();
   const { createNewToDoList, myToDoLists } = useTodo();
@@ -62,15 +62,25 @@ export const Layout = () => {
 
   return (
     <>
+      <ErrorSubmitModal
+        open={submitErrorModalOpen}
+        setOpen={setSubmitErrorModalOpen}
+      />
+
       <div className="flex flex-row h-full">
         <MobileSidebar
+          setSubmitErrorModalOpen={setSubmitErrorModalOpen}
           setSidebarOpen={setSidebarOpen}
           onCreateNewList={onCreateNewList}
           sidebarOpen={sidebarOpen}
           navigation={myToDoLists}
         />
 
-        <Sidebar navigation={myToDoLists} onCreateNewList={onCreateNewList} />
+        <Sidebar
+          navigation={myToDoLists}
+          onCreateNewList={onCreateNewList}
+          setSubmitErrorModalOpen={setSubmitErrorModalOpen}
+        />
         <div className="flex flex-col flex-1">
           <TopBar
             userNavigation={userNavigation}
