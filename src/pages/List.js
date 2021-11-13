@@ -18,7 +18,11 @@ import { useTodo } from "../context/todo";
 import { DropDownMenu, Modal, SlideOver } from "../components";
 import { Menu, Transition, Dialog } from "@headlessui/react";
 import { toast } from "react-toastify";
-import { TodoListItemDetails, TodoListSettings } from "../modals";
+import {
+  ShareToDoListModal,
+  TodoListItemDetails,
+  TodoListSettings,
+} from "../modals";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -122,6 +126,7 @@ export const Page = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -149,6 +154,11 @@ export const Page = () => {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    if (detailsOpen) return;
+    getCurrentToDoList();
+  }, [detailsOpen]);
 
   const onFormSubmit = (e) => {
     e.preventDefault();
@@ -258,6 +268,11 @@ export const Page = () => {
 
   return (
     <>
+      <ShareToDoListModal
+        open={shareModalOpen}
+        setOpen={setShareModalOpen}
+        listId={listId}
+      ></ShareToDoListModal>
       <TodoListSettings
         open={settingsOpen}
         setOpen={setSettingsOpen}
@@ -328,7 +343,7 @@ export const Page = () => {
           </DropDownMenu>
         </div>
         <button
-          onClick={() => toast.error("Sharing is currently not available")}
+          onClick={() => setShareModalOpen(true)}
           type="button"
           className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
@@ -489,6 +504,7 @@ export const Page = () => {
       <TodoListItemDetails
         open={detailsOpen}
         setOpen={setDetailsOpen}
+        listId={listId}
         item={selectedItem}
       />
     </>
