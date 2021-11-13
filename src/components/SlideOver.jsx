@@ -43,7 +43,7 @@ export const Component = ({
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    onFormSubmit();
+                    onFormSubmit(e);
                     setOpen(false);
                   }}
                   className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl"
