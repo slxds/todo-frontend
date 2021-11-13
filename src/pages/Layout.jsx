@@ -17,6 +17,7 @@ import {
   Notification,
   Sidebar,
   TopBar,
+  Banner,
 } from "../components";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -43,6 +44,7 @@ const navigation = [
 
 export const Layout = () => {
   const { logout } = useAuth();
+  const { me } = useTodo();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [submitErrorModalOpen, setSubmitErrorModalOpen] = useState(false);
 
@@ -67,7 +69,9 @@ export const Layout = () => {
         setOpen={setSubmitErrorModalOpen}
       />
 
-      <div className="flex flex-row h-full">
+      {me?.name ? null : <Banner />}
+
+      <div className="flex flex-row h-full w-full">
         <MobileSidebar
           setSubmitErrorModalOpen={setSubmitErrorModalOpen}
           setSidebarOpen={setSidebarOpen}
