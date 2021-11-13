@@ -24,7 +24,7 @@ export const Provider = ({ children }) => {
 
   useEffect(() => {
     auth
-      .post(`/v1.0/login/refresh`)
+      .post(`/v1/login/refresh`)
       .then((res) => {
         setJWT(res.data.jwt);
         setLoginInProcess(false);
@@ -52,7 +52,7 @@ export const Provider = ({ children }) => {
       console.log(didToken);
       auth
         .post(
-          "/v1.0/login/magic",
+          "/v1/login/magic",
           {},
           {
             headers: { Authorization: "Bearer " + didToken },
