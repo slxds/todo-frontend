@@ -102,7 +102,7 @@ export const Page = () => {
                   className="inline-block h-12 w-12 rounded-full"
                   src={
                     newImagePreview ||
-                    `http://localhost:4000/v1/file/public/${me.image}`
+                    `${process.env.REACT_APP_BASEURL}/v1/file/public/${me.image}`
                   }
                   alt=""
                 />

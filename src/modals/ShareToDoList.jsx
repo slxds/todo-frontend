@@ -110,7 +110,7 @@ export const Modal = ({ setOpen, open, listId }) => {
                       <div className="flex-shrink-0">
                         <img
                           className="h-8 w-8 rounded-full"
-                          src={`http://localhost:4000/v1/file/public/${user.user.image}`}
+                          src={`${process.env.REACT_APP_BASEURL}/v1/file/public/${user.user.image}`}
                           alt=""
                         />
                       </div>
