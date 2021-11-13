@@ -3,25 +3,32 @@ import { toast } from "react-toastify";
 import { useTodo } from "../context/todo";
 
 export const Page = () => {
-  const [me, setMe] = useState({ name: "", email: "" });
+  const [newMe, setMe] = useState({ name: "", email: "", image: "" });
+  const [newImagePreview, setNewImagePreview] = useState(null);
 
-  const { getMe, updateProfile } = useTodo();
+  const [imagePreview, setImagePreview] = useState("");
+
+  const { me, updateProfile, updateMe } = useTodo();
 
   useEffect(() => {
-    getMe()
-      .then((res) => {
-        setMe(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    setMe(me);
+  }, [me]);
+
+  useEffect(() => {
+    console.log(me);
+  }, [me]);
 
   const onUpdateProfile = (e) => {
     e.preventDefault();
-    updateProfile(me)
+
+    let formData = new FormData();
+    formData.append("file", newMe.image);
+    formData.append("name", newMe.name);
+    formData.append("email", newMe.email);
+
+    updateProfile(formData)
       .then((res) => {
-        setMe(res.data);
+        updateMe();
         toast.success("Profile updated");
       })
       .catch((err) => {
@@ -53,7 +60,7 @@ export const Page = () => {
                 type="text"
                 name="first-name"
                 id="first-name"
-                value={me?.name}
+                value={newMe?.name}
                 onChange={(e) => setMe((m) => ({ ...m, name: e.target.value }))}
                 autoComplete="given-name"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -71,13 +78,58 @@ export const Page = () => {
                 type="text"
                 name="email-address"
                 id="email-address"
-                value={me?.email}
+                value={newMe?.email}
                 onChange={(e) =>
                   setMe((m) => ({ ...m, email: e.target.value }))
                 }
                 autoComplete="email"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                readOnly
               />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-6 gap-6">
+            <div className="sm:col-span-6">
+              <label
+                htmlFor="photo"
+                className="block text-sm font-medium text-blue-gray-900"
+              >
+                Photo
+              </label>
+              <div className="mt-1 flex items-center">
+                <img
+                  className="inline-block h-12 w-12 rounded-full"
+                  src={
+                    newImagePreview ||
+                    `http://localhost:4000/v1/file/public/${me.image}`
+                  }
+                  alt=""
+                />
+                <div className="ml-4 flex">
+                  <div className="relative bg-white py-2 px-3 border border-blue-gray-300 rounded-md shadow-sm flex items-center cursor-pointer hover:bg-blue-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-blue-gray-50 focus-within:ring-blue-500">
+                    <label
+                      htmlFor="user-photo"
+                      className="relative text-sm font-medium text-blue-gray-900 pointer-events-none"
+                    >
+                      <span>Change</span>
+                      <span className="sr-only"> user photo</span>
+                    </label>
+                    <input
+                      onChange={(e) => {
+                        setNewImagePreview(
+                          URL.createObjectURL(e.target.files[0])
+                        );
+                        setMe((m) => ({ ...m, image: e.target.files[0] }));
+                      }}
+                      id="user-photo"
+                      name="file"
+                      type="file"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer border-gray-300 rounded-md"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
